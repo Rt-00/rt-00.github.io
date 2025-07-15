@@ -30,3 +30,9 @@ Hi, I'am Rafael Toledo - a software developer with a strong interest in algorith
 ## ✍️ Contributions
 
 This is a personal space, but feel free to open an issue or reach out if you have suggestions or want to connect.
+
+
+# Articles
+
+### 2025-07
+- [Why Publish?](/why-publish)
