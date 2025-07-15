@@ -2,7 +2,7 @@
 layout: page
 title: "Why Publish?"
 permalink: /why-publish/
-date: 2025-07-17
+date: 2025-07-14
 ---
 
 # Why Publish?
@@ -19,12 +19,12 @@ So this time, I decided to go for it.
 I'm not trying to be anyone's teacher.
 I'm not here to impress, or go viral.
 
-Honestly, I just want to make sense for **me** — for my own studies, reflections and learning process.
+Honestly, I just want this to make sense for **me** — for my own studies, reflections, and learning process.
 If, in the process, it ends up helping someone else, even better.
 
 ---
 
-Publishing creates a king of trail.
+Publishing creates a kind of trail.
 
 I might not remember what I was thinking a month from now, but this page will.
 It’s like a personal backup — a snapshot of a moment in thought.
