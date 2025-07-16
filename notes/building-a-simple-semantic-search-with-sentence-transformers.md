@@ -41,9 +41,8 @@ To generate these vectors, i use a **pre-trained transformer model** like `all-M
 
 Once we have embeddings, we compare them using **cosine similarity**, defined as:
 
-$$
-\text{similarity} = \frac{A \cdot B} {\|A\| \cdot \|B\|}
-$$
+<pre>similarity = (A · B) / (||A|| · ||B||)</pre>
+
 Where:
 - A . B is the dot product
 - ||A|| and ||B|| are vector norms (magnitudes)
@@ -180,9 +179,9 @@ Usamos um modelo transformer pré-treinado, como o `all-MiniLM-L6-v2`, para gera
 ## Similaridade de Cosseno
 
 Para comparar vetores, usamos a **similaridade de cosseno**, definida por:
-$$
-\text{similaridade} = \frac{A \cdot B} {\|A\| \cdot \|B\|}
-$$
+
+<pre>similaridade = (A · B) / (||A|| · ||B||)</pre>
+
 Onde:
 - A . B é o produto escalar
 - ||A|| e ||B|| são as normas dos vetores
