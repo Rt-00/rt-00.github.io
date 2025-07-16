@@ -41,12 +41,14 @@ To generate these vectors, i use a **pre-trained transformer model** like `all-M
 
 Once we have embeddings, we compare them using **cosine similarity**, defined as:
 
-<pre>similarity = (A · B) / (||A|| · ||B||)</pre>
+<pre>
+similarity = (A · B) / (||A|| · ||B||)
 
 Where:
 - A . B is the dot product
 - ||A|| and ||B|| are vector norms (magnitudes)
-
+</pre>
+    
 This metric measures the **angle** between vectors — not their magnitude.
 
 - `1.0`: Perfect semantic match
@@ -180,12 +182,14 @@ Usamos um modelo transformer pré-treinado, como o `all-MiniLM-L6-v2`, para gera
 
 Para comparar vetores, usamos a **similaridade de cosseno**, definida por:
 
-<pre>similaridade = (A · B) / (||A|| · ||B||)</pre>
+<pre>
+similaridade = (A · B) / (||A|| · ||B||)
 
 Onde:
 - A . B é o produto escalar
 - ||A|| e ||B|| são as normas dos vetores
-
+</pre>
+    
 Essa métrica mede o **ângulo** entre os vetores, ignorando magnitude:
 
 - `1.0`: Significado idêntico
