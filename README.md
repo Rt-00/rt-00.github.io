@@ -35,6 +35,6 @@ This is a personal space, but feel free to open an issue or reach out if you hav
 # Articles
 
 ### 2025-07
-- [THM - WriteUp - Robots](/writeup-robots)
+- [THM - WriteUp - Robots](/writeups-robots)
 - [Building a simple semantic search with Sentence Transformers](/building-a-simple-semantic-search-with-sentence-transformers)
 - [Why Publish?](/why-publish)
