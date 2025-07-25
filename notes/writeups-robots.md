@@ -1,3 +1,10 @@
+---
+layout: page
+title: "THM - WriteUp - Robots"
+permalink: /writeups-robots/
+date: 2025-07-25
+---
+
 ## Robots - A (small) tribute to I. Asimov.
 
 [TryHackMe - Robots](https://tryhackme.com/room/robots)
