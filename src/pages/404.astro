@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+---
+
+<Base title="404" description="Not found.">
+  <p>
+    <span class="ps1">{SITE.prompt}</span> <span data-path>???</span>
+  </p>
+  <p>
+    command not found: <span data-path>???</span>
+  </p>
+  <p>
+    <span class="ps1">$</span> <a href="/">cd ~</a>
+  </p>
+</Base>
+
+<script>
+  for (const el of document.querySelectorAll('[data-path]')) {
+    el.textContent = window.location.pathname;
+  }
+</script>
