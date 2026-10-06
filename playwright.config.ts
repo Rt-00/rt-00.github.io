@@ -9,7 +9,7 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:4321' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'pnpm preview --port 4321',
+    command: 'pnpm preview --port 4321 --ignore-lock',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
   },
