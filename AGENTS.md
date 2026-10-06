@@ -31,6 +31,15 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - UI copy is English. Each post declares `lang: pt | en` (shown as `[pt]`/`[en]`).
 - Keep this file updated as the source of truth for future agents.
 
+## Layout
+
+- `src/site.ts` — site metadata, prompt, nav.
+- `src/content/posts/` — posts (`<slug>.md(x)` or `<slug>/index.md` + images). Schema in `src/content.config.ts`.
+- `src/lib/` — pure helpers (unit-tested, no Astro imports) + `content.ts` (Astro wrapper: `getPosts()`).
+- `src/layouts/Base.astro` — header/nav/theme toggle/footer prompt with blinking cursor.
+- `src/components/Command.astro` — renders `rt@blog:~$ <cmd>` at the top of each page.
+- `src/shiki/mono.ts` — grayscale Shiki themes (light/dark via CSS vars, `defaultColor: false`).
+
 ## Decisions
 
 - Font: JetBrains Mono via `@fontsource/jetbrains-mono` (self-hosted).
@@ -42,3 +51,4 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 
 - [x] Scaffold + tooling
 - [x] CI (format, lint, check, unit, build, e2e)
+- [x] Content collection, layout + theme, home `ls -l`
