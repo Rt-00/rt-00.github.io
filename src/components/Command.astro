@@ -1,0 +1,19 @@
+---
+import { SITE } from '../site';
+
+interface Props {
+  cmd: string;
+}
+
+const { cmd } = Astro.props;
+---
+
+<p class="command">
+  <span class="ps1">{SITE.prompt}</span> {cmd}
+</p>
+
+<style>
+  .command {
+    margin: 0 0 1.5rem;
+  }
+</style>

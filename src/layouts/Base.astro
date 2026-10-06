@@ -1,0 +1,127 @@
+---
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/400-italic.css';
+import '@fontsource/jetbrains-mono/700.css';
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { NAV, SITE } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: string;
+}
+
+const { title, description = SITE.description, lang = 'en' } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE.title}` : SITE.title;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' || path.startsWith('/posts/') : path.startsWith(href);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch {
+        /* storage unavailable */
+      }
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="visually-hidden" href="#content">
+      skip to content
+    </a>
+    <header class="site-header">
+      <a class="brand" href="/">
+        {SITE.title}
+      </a>
+      <nav aria-label="Main">
+        {NAV.map(({ href, label }) => (
+          <a href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+            {label}
+          </a>
+        ))}
+      </nav>
+      <ThemeToggle />
+    </header>
+    <main id="content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>
+        <span class="ps1">{SITE.prompt}</span> <span class="cursor" aria-hidden="true"></span>
+      </p>
+      <p class="muted">
+        © {new Date().getFullYear()}
+        {SITE.author} · <a href="/rss.xml">rss</a>
+      </p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 2ch;
+    padding-bottom: 0.75rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px dashed var(--faint);
+  }
+  .brand {
+    font-weight: 700;
+    text-decoration: none;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2ch;
+    flex: 1;
+  }
+  nav a {
+    text-decoration: none;
+    color: var(--muted);
+  }
+  nav a::before {
+    content: './';
+  }
+  nav a[aria-current='page'],
+  nav a:hover {
+    color: var(--bg);
+    background: var(--fg);
+  }
+  nav a[aria-current='page']:not(:hover) {
+    color: var(--fg);
+    background: none;
+    text-decoration: underline;
+  }
+  .site-footer {
+    margin-top: 4rem;
+  }
+  .site-footer p {
+    margin: 0;
+  }
+  .site-footer .muted {
+    margin-top: 1rem;
+    font-size: 0.85em;
+  }
+</style>

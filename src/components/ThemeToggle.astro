@@ -1,0 +1,25 @@
+<button type="button" class="theme-toggle" aria-label="Toggle theme" data-theme-toggle>
+  [theme]
+</button>
+
+<script>
+  const root = document.documentElement;
+  const dark = window.matchMedia('(prefers-color-scheme: dark)');
+  const current = () => root.dataset.theme ?? (dark.matches ? 'dark' : 'light');
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
+    const render = () => (button.textContent = `[${current()}]`);
+    button.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        // storage unavailable (private mode): theme still applies to this page
+      }
+      render();
+    });
+    dark.addEventListener('change', render);
+    render();
+  }
+</script>
