@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+---
+
+<Base title="search" description="Search posts.">
+  <form class="search" role="search" action="/search/">
+    <label>
+      <span class="ps1">{SITE.prompt}</span> grep -ri "
+      <input
+        type="search"
+        name="q"
+        aria-label="Search posts"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+        data-search-input
+      />
+      " posts/
+    </label>
+  </form>
+  <p class="muted" data-search-status aria-live="polite"></p>
+  <ul class="results" data-search-results></ul>
+  <noscript>
+    <p class="muted">search needs javascript.</p>
+  </noscript>
+</Base>
+
+<script>
+  interface PagefindResult {
+    url: string;
+    excerpt: string;
+    meta: { title?: string };
+  }
+  interface Pagefind {
+    debouncedSearch(
+      query: string,
+    ): Promise<{ results: { data(): Promise<PagefindResult> }[] } | null>;
+  }
+
+  const MAX_RESULTS = 20;
+
+  let pagefind: Promise<Pagefind> | undefined;
+  const loadPagefind = () => {
+    const path = '/pagefind/pagefind.js';
+    pagefind ??= import(/* @vite-ignore */ path);
+    return pagefind;
+  };
+
+  function render(
+    status: HTMLElement,
+    list: HTMLElement,
+    results: PagefindResult[],
+    total: number,
+  ) {
+    status.textContent = `${total} ${total === 1 ? 'match' : 'matches'}`;
+    list.replaceChildren(
+      ...results.map(({ url, excerpt, meta }) => {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = meta.title ?? url;
+        const snippet = document.createElement('p');
+        snippet.className = 'excerpt';
+        snippet.innerHTML = excerpt; // Pagefind escapes content and only adds <mark>
+        item.append(link, snippet);
+        return item;
+      }),
+    );
+  }
+
+  async function search(query: string, status: HTMLElement, list: HTMLElement) {
+    const url = new URL(window.location.href);
+    if (query) url.searchParams.set('q', query);
+    else url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+
+    if (!query.trim()) {
+      status.textContent = '';
+      list.replaceChildren();
+      return;
+    }
+    try {
+      const response = await (await loadPagefind()).debouncedSearch(query);
+      if (!response) return; // superseded by a newer query
+      const results = await Promise.all(
+        response.results.slice(0, MAX_RESULTS).map((result) => result.data()),
+      );
+      render(status, list, results, response.results.length);
+    } catch {
+      status.textContent = 'search index unavailable (run `pnpm build`).';
+    }
+  }
+
+  const form = document.querySelector<HTMLFormElement>('form[role="search"]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const status = document.querySelector<HTMLElement>('[data-search-status]');
+  const list = document.querySelector<HTMLUListElement>('[data-search-results]');
+
+  if (form && input && status && list) {
+    input.addEventListener('input', () => search(input.value, status, list));
+    form.addEventListener('submit', (event) => event.preventDefault());
+
+    const initial = new URLSearchParams(window.location.search).get('q') ?? '';
+    input.value = initial;
+    search(initial, status, list);
+  }
+</script>
+
+<style>
+  .search {
+    margin: 0 0 1.5rem;
+  }
+  input {
+    font: inherit;
+    color: var(--fg);
+    background: none;
+    border: 0;
+    border-bottom: 1px dashed var(--muted);
+    padding: 0;
+    width: 18ch;
+    max-width: 100%;
+    outline: none;
+    border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus {
+    border-bottom-style: solid;
+    border-bottom-color: var(--fg);
+  }
+  input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .results {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .results :global(li) {
+    margin-bottom: 1.25rem;
+  }
+  .results :global(.excerpt) {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+    font-size: 0.9em;
+  }
+  .results :global(mark) {
+    background: var(--fg);
+    color: var(--bg);
+  }
+</style>
