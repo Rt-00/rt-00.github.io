@@ -1,0 +1,25 @@
+---
+import { getEntry, render } from 'astro:content';
+import Command from '../components/Command.astro';
+import Base from '../layouts/Base.astro';
+import '../styles/prose.css';
+
+const about = await getEntry('pages', 'about');
+if (!about) throw new Error('missing src/content/pages/about.md');
+const { Content } = await render(about);
+---
+
+<Base title="about" description={about.data.description}>
+  <Command cmd="whoami" />
+  <h1>{about.data.title}</h1>
+  <div class="prose">
+    <Content />
+  </div>
+</Base>
+
+<style>
+  h1 {
+    margin-top: 0;
+    font-size: 1.25rem;
+  }
+</style>
