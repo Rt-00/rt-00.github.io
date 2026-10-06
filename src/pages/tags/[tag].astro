@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Command from '../../components/Command.astro';
+import PostList from '../../components/PostList.astro';
+import Base from '../../layouts/Base.astro';
+import { getPosts } from '../../lib/content';
+import { countTags, postsWithTag } from '../../lib/tags';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return countTags(posts).map(({ tag }) => ({
+    params: { tag },
+    props: { posts: postsWithTag(posts, tag) },
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Base title={`#${tag}`} description={`Posts tagged #${tag}.`}>
+  <Command cmd={`grep -l "#${tag}" posts/*`} />
+  <PostList posts={posts} />
+</Base>
