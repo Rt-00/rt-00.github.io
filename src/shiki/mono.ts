@@ -28,7 +28,6 @@ function mono(type: 'light' | 'dark'): ThemeRegistration {
         scope: ['constant.numeric', 'constant.language'],
         settings: { foreground: soft, fontStyle: 'bold' },
       },
-      { scope: ['entity.name.function', 'support.function'], settings: { fontStyle: 'underline' } },
       { scope: ['punctuation', 'meta.brace'], settings: { foreground: muted } },
       { scope: ['markup.heading'], settings: { fontStyle: 'bold' } },
       { scope: ['markup.deleted'], settings: { foreground: muted, fontStyle: 'strikethrough' } },
