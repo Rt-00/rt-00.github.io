@@ -1,0 +1,76 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { isoDate, monthDay } from '../lib/format';
+import { groupByYear } from '../lib/posts';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+
+const groups = groupByYear(Astro.props.posts);
+---
+
+{groups.length === 0 && <p class="muted">total 0</p>}
+{groups.map(({ year, posts }) => (
+  <section>
+    <h2 class="year">{year}</h2>
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <time datetime={isoDate(post.data.date)}>{monthDay(post.data.date)}</time>
+          <span class="muted">[{post.data.lang}]</span>
+          <span class="title">
+            <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+            {post.data.draft && <span class="muted"> (draft)</span>}
+          </span>
+          {post.data.tags.length > 0 && (
+            <span class="tags muted">
+              {post.data.tags.map((tag) => (
+                <a href={`/tags/${tag}/`}>#{tag}</a>
+              ))}
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+))}
+
+<style>
+  .year {
+    margin: 2rem 0 0.5rem;
+  }
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post-list li {
+    display: grid;
+    grid-template-columns: 5ch 4ch 1fr;
+    column-gap: 2ch;
+    padding: 0.15rem 0;
+  }
+  time {
+    color: var(--muted);
+  }
+  .tags {
+    grid-column: 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1ch;
+    font-size: 0.85em;
+  }
+  .tags a {
+    text-decoration: none;
+  }
+  @media (min-width: 640px) {
+    .post-list li {
+      grid-template-columns: 5ch 4ch 1fr auto;
+    }
+    .tags {
+      grid-column: 4;
+      justify-content: flex-end;
+    }
+  }
+</style>
