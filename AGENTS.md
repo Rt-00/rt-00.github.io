@@ -54,3 +54,4 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - [x] Content collection, layout + theme, home `ls -l`
 - [x] Post page (`cat`), TOC, reading time, grayscale code, optimized images (sharp)
 - [x] Tags: `/tags/` (`ls tags/`) and `/tags/<tag>/` (`grep -l`)
+- [x] RSS (`/rss.xml`) + sitemap
