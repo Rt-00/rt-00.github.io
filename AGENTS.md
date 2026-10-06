@@ -57,3 +57,4 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - [x] RSS (`/rss.xml`) + sitemap
 - [x] About (`src/content/pages/about.md`, `whoami`) + 404 (`command not found`)
 - [x] Search: Pagefind (built post-`astro build`, `--force-language en` so pt+en share one index; only `[data-pagefind-body]` = posts) with custom `grep` UI at `/search/?q=`
+- [x] Deploy: `.github/workflows/deploy.yml` builds and publishes `dist` to GitHub Pages on push to `main` (Pages source must be "GitHub Actions")
