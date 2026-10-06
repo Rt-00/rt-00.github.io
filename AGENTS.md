@@ -52,3 +52,4 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - [x] Scaffold + tooling
 - [x] CI (format, lint, check, unit, build, e2e)
 - [x] Content collection, layout + theme, home `ls -l`
+- [x] Post page (`cat`), TOC, reading time, grayscale code, optimized images (sharp)
