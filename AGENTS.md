@@ -25,6 +25,7 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 
 ## Conventions
 
+- `pnpm preview` auto-backgrounds when an agent is detected; Playwright uses `--ignore-lock` to keep it in the foreground.
 - TDD: write the failing test first (unit for `src/lib/*`, e2e for pages).
 - Conventional Commits, small and semantic. One branch per feature (`feat/<scope>`), PR, rebase-merge.
 - UI copy is English. Each post declares `lang: pt | en` (shown as `[pt]`/`[en]`).
@@ -40,3 +41,4 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 ## Status
 
 - [x] Scaffold + tooling
+- [x] CI (format, lint, check, unit, build, e2e)
