@@ -12,12 +12,12 @@ test.describe('home', () => {
   });
 
   test('lists published posts grouped by year with lang and tags', async ({ page }) => {
-    const row = page.getByRole('listitem').filter({ hasText: 'Hello, world' });
+    const row = page.getByRole('listitem').filter({ hasText: 'Bits + context:' });
     await expect(row).toContainText('[en]');
-    await expect(row).toContainText('#meta');
-    await expect(row.getByRole('link', { name: 'Hello, world' })).toHaveAttribute(
+    await expect(row).toContainText('#csapp');
+    await expect(row.getByRole('link', { name: /Bits \+ context:/ })).toHaveAttribute(
       'href',
-      '/posts/hello-world/',
+      '/posts/csapp-1-1-bits-and-context/',
     );
     await expect(page.getByRole('heading', { name: '2026' })).toBeVisible();
   });
