@@ -29,6 +29,7 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - TDD: write the failing test first (unit for `src/lib/*`, e2e for pages).
 - Conventional Commits, small and semantic. One branch per feature (`feat/<scope>`), PR, rebase-merge.
 - UI copy is English. Each post declares `lang: pt | en` (shown as `[pt]`/`[en]`).
+- Posts are listed newest first (`date` desc, then slug). Posts published on the same day need a time in `date` (`2026-10-07T18:11:00Z`, UTC) so the newer one comes first; only the day is displayed.
 - Translated posts are separate entries cross-linked at the top (`Read in English` / `Leia em português`).
 - CSAPP series: reading notes per section, slug `csapp-<section>-<slug>` (e.g. `csapp-1-1-bits-e-contexto`), title `CSAPP §<section> — …`, tag `csapp` (`/tags/csapp/` is the series index), pt + en.
 - `draft-example.md` is a test fixture (drafts must not be built/counted) — keep it.
