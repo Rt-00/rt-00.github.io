@@ -45,6 +45,12 @@ test.describe('post page', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'pt');
   });
 
+  test('series posts link to the next part', async ({ page }) => {
+    await page.locator('main').getByRole('link', { name: '1.2', exact: true }).click();
+    await expect(page).toHaveURL(/\/posts\/csapp-1-2-programs-translated\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^CSAPP §1\.2/);
+  });
+
   test('drafts are not built', async ({ page }) => {
     const response = await page.goto('/posts/draft-example/');
     expect(response?.status()).toBe(404);

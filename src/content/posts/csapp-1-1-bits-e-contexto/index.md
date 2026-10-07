@@ -150,5 +150,5 @@ vê mágica, ou um bug "impossível". Quem conhece os bits embaixo vê só um co
 3. Desconfie das fronteiras. Rede, disco, FFI e `memcpy` são lugares onde os bits atravessam de um
    contexto para outro, e é ali que a interpretação costuma se perder.
 
-Para uma seção de duas páginas, rendeu bastante. Próxima parada: 1.2, onde o `hello.c` é traduzido
+Para uma seção de duas páginas, rendeu bastante. Próxima parada: [1.2](/posts/csapp-1-2-programas-traduzidos/), onde o `hello.c` é traduzido
 por outros programas até virar um executável.

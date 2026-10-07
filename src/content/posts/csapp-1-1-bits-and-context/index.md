@@ -149,5 +149,5 @@ that changed.
 3. Be suspicious of boundaries. The network, the disk, FFI and `memcpy` are places where bits cross
    from one context to another, and that is where the interpretation usually gets lost.
 
-For a two-page section, that was a lot. Next stop: 1.2, where `hello.c` is translated by other
+For a two-page section, that was a lot. Next stop: [1.2](/posts/csapp-1-2-programs-translated/), where `hello.c` is translated by other
 programs until it becomes an executable.
