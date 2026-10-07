@@ -1,7 +1,7 @@
 ---
 title: 'CSAPP §1.1 — Bits + context: what hello.c teaches about meaning'
 description: 'CSAPP series, part 1: notes and reflections on section 1.1 — all information is just bits, and what changes is how we read them.'
-date: 2026-10-07
+date: 2026-10-07T17:47:00Z
 lang: en
 tags: [csapp, systems, c]
 ---

@@ -22,6 +22,14 @@ test.describe('home', () => {
     await expect(page.getByRole('heading', { name: '2026' })).toBeVisible();
   });
 
+  test('lists the most recent post first', async ({ page }) => {
+    const first = page.locator('main').getByRole('listitem').first();
+    await expect(first.locator('a[href^="/posts/"]')).toHaveAttribute(
+      'href',
+      /\/posts\/csapp-1-2-/,
+    );
+  });
+
   test('hides drafts in production builds', async ({ page }) => {
     await expect(page.locator('main')).not.toContainText('Draft example');
   });

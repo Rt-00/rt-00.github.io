@@ -1,7 +1,7 @@
 ---
 title: 'CSAPP §1.2 — Programas que traduzem programas: do hello.c ao executável'
 description: 'Série CSAPP, parte 2: notas e reflexões sobre a seção 1.2 — as quatro fases da compilação, e o que muda quando o seu código passa por elas.'
-date: 2026-10-07
+date: 2026-10-07T18:11:00Z
 lang: pt
 tags: [csapp, systems, c, compilers]
 ---

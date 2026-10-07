@@ -21,6 +21,14 @@ describe('sortByDateDesc', () => {
     expect(posts.map((p) => p.id)).toEqual(['old', 'new', 'mid']);
   });
 
+  test('orders posts from the same day by time', () => {
+    const posts = [
+      post('morning', '2026-10-07T09:00:00Z'),
+      post('evening', '2026-10-07T18:00:00Z'),
+    ];
+    expect(sortByDateDesc(posts).map((p) => p.id)).toEqual(['evening', 'morning']);
+  });
+
   test('breaks ties by id for stable output', () => {
     const posts = [post('b', '2026-01-01'), post('a', '2026-01-01')];
     expect(sortByDateDesc(posts).map((p) => p.id)).toEqual(['a', 'b']);
