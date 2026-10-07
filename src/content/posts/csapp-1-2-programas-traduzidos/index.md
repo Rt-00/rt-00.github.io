@@ -27,7 +27,7 @@ $ gcc -o hello hello.c
 O `gcc` é um **compiler driver**: ele não faz o trabalho sozinho, mas chama quatro programas em
 sequência. Juntos, eles formam o **sistema de compilação**:
 
-![O pipeline de compilação: hello.c passa por cpp, cc1, as e ld até virar o executável hello](./pipeline.svg)
+![O pipeline de compilação: hello.c passa por cpp, cc1, as e ld (que também lê o printf.o da libc) até virar o executável hello](./pipeline.svg)
 
 1. **Pré-processamento (`cpp`).** Trata as linhas que começam com `#`. O `#include <stdio.h>` é
    trocado pelo conteúdo do arquivo `stdio.h`. O resultado, `hello.i`, ainda é um programa C.
@@ -37,7 +37,7 @@ sequência. Juntos, eles formam o **sistema de compilação**:
 3. **Montagem (`as`).** Traduz o assembly em código de máquina e o guarda num **objeto relocável**,
    o `hello.o`. Esse arquivo já é binário: num editor de texto, parece lixo.
 4. **Ligação (`ld`).** O `hello.c` chama `printf`, que não está nele. Ela vem da biblioteca padrão
-   de C, num objeto pré-compilado. O **linker** junta as duas partes e gera o executável `hello`,
+   de C, num objeto pré-compilado, o `printf.o`. O **linker** junta as duas partes e gera o executável `hello`,
    pronto para ser carregado na memória.
 
 A seção traz ainda um aside sobre o **projeto GNU**, criado por Richard Stallman em 1984 para
