@@ -27,7 +27,7 @@ $ gcc -o hello hello.c
 `gcc` is a **compiler driver**: it does not do the work by itself, it calls four programs in a row.
 Together they make up the **compilation system**:
 
-![The compilation pipeline: hello.c goes through cpp, cc1, as and ld to become the hello executable](./pipeline.svg)
+![The compilation pipeline: hello.c goes through cpp, cc1, as and ld (which also reads printf.o from libc) to become the hello executable](./pipeline.svg)
 
 1. **Preprocessing (`cpp`).** Handles the lines that start with `#`. `#include <stdio.h>` is
    replaced by the contents of `stdio.h`. The result, `hello.i`, is still a C program.
@@ -37,7 +37,7 @@ Together they make up the **compilation system**:
 3. **Assembly (`as`).** Translates assembly into machine code and stores it in a **relocatable
    object**, `hello.o`. This file is already binary: in a text editor it looks like garbage.
 4. **Linking (`ld`).** `hello.c` calls `printf`, which is not in it. It comes from the C standard
-   library, in a precompiled object. The **linker** merges the two and produces the `hello`
+   library, in a precompiled object, `printf.o`. The **linker** merges the two and produces the `hello`
    executable, ready to be loaded into memory.
 
 The section also has an aside on the **GNU project**, started by Richard Stallman in 1984 to build a
