@@ -3,7 +3,7 @@ title: Draft example
 description: A draft that only shows up in development.
 date: 2026-10-06
 lang: en
-tags: [meta]
+tags: [csapp]
 draft: true
 ---
 
