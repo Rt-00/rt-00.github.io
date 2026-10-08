@@ -192,5 +192,5 @@ definiu. Saber em qual fase um erro aparece já diz muito sobre onde procurar:
 3. Leia a mensagem de erro procurando a fase. `ld returned 1 exit status` diz que o problema não
    está na sintaxe, e sim em como as partes se juntam.
 
-Próxima parada: 1.3, que explica por que vale a pena entender como o sistema de compilação
+Próxima parada: [1.3](/posts/csapp-1-3-por-que-entender-compilacao/), que explica por que vale a pena entender como o sistema de compilação
 funciona.
