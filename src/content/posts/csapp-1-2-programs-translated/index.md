@@ -192,4 +192,4 @@ defined it. Knowing which phase an error comes from already tells you a lot abou
 3. Read error messages looking for the phase. `ld returned 1 exit status` says the problem is not
    the syntax, but how the pieces fit together.
 
-Next stop: 1.3, which explains why it pays to understand how the compilation system works.
+Next stop: [1.3](/posts/csapp-1-3-why-compilation-matters/), which explains why it pays to understand how the compilation system works.
