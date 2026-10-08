@@ -5,10 +5,10 @@ test('tags index lists tags with counts, most used first', async ({ page }) => {
   const main = page.locator('main');
   await expect(main).toContainText('rt@blog:~$ ls tags/');
   const items = main.getByRole('listitem');
-  // `csapp` is used by four published posts and one draft: drafts must not count
-  await expect(items.filter({ hasText: 'csapp' })).toHaveText(/^\s*4\s+csapp\s*$/);
-  // ties are broken alphabetically
-  await expect(items.first()).toHaveText(/^\s*4\s+c\s*$/);
+  // `csapp` is used by ten published posts and one draft: drafts must not count
+  await expect(items.filter({ hasText: 'csapp' })).toHaveText(/^\s*10\s+csapp\s*$/);
+  // ties are broken alphabetically (`csapp` and `systems` both have 10)
+  await expect(items.first()).toHaveText(/^\s*10\s+csapp\s*$/);
   await expect(main.getByRole('link', { name: 'csapp' })).toHaveAttribute('href', '/tags/csapp/');
 });
 
