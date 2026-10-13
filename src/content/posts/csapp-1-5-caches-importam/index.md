@@ -140,5 +140,5 @@ Algumas consequências do dia a dia:
 3. Meça. Os números deste post são da minha máquina. Os da sua serão outros, mas os degraus vão
    estar lá.
 
-Próxima parada: 1.6, onde a ideia de cache vira uma hierarquia inteira de dispositivos de
+Próxima parada: [1.6](/posts/csapp-1-6-hierarquia-de-memoria/), onde a ideia de cache vira uma hierarquia inteira de dispositivos de
 armazenamento.

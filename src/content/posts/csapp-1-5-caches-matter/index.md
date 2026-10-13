@@ -138,4 +138,4 @@ Some everyday consequences:
 3. Measure. The numbers in this post are from my machine. Yours will differ, but the steps will be
    there.
 
-Next stop: 1.6, where the idea of a cache turns into a whole hierarchy of storage devices.
+Next stop: [1.6](/posts/csapp-1-6-memory-hierarchy/), where the idea of a cache turns into a whole hierarchy of storage devices.
