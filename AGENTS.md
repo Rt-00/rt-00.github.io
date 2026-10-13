@@ -50,6 +50,7 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - Theme: follows `prefers-color-scheme`, toggle persisted in `localStorage` (`theme`).
 - Prompt identity: `rt@blog:~$`.
 - Home lists posts `ls -l` style grouped by year.
+- Layout: one column of `--measure: 100ch` (global.css), 15px font, 16px from 1440px. Home rows put tags under the title; below 640px date/lang sit on their own line so the title gets the full width. `tests/e2e/layout.spec.ts` guards widths and no horizontal scroll at 375px.
 
 ## Status
 
