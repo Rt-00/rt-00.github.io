@@ -5,7 +5,7 @@
   --muted: #6b6b6b;
   --faint: #d4d4d4;
   --code-bg: #f4f4f4;
-  --measure: 76ch;
+  --measure: 100ch;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -53,6 +53,13 @@ body {
     monospace;
   font-variant-ligatures: none;
   overflow-wrap: break-word;
+}
+
+/* Wide screens: a slightly larger font keeps the 100ch column comfortable to read. */
+@media (min-width: 1440px) {
+  body {
+    font-size: 16px;
+  }
 }
 
 ::selection {
