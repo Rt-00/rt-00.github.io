@@ -45,17 +45,31 @@ const groups = groupByYear(Astro.props.posts);
     margin: 0;
     padding: 0;
   }
+  /* Narrow screens: date and lang on their own line, title and tags use the full width. */
   .post-list li {
     display: grid;
-    grid-template-columns: 5ch 4ch 1fr;
+    grid-template-columns: 5ch 1fr;
     column-gap: 2ch;
-    padding: 0.15rem 0;
+    padding: 0.4rem 0;
+  }
+  .title,
+  .tags {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 640px) {
+    .post-list li {
+      grid-template-columns: 5ch 4ch 1fr;
+      padding: 0.25rem 0;
+    }
+    .title,
+    .tags {
+      grid-column: 3;
+    }
   }
   time {
     color: var(--muted);
   }
   .tags {
-    grid-column: 3;
     display: flex;
     flex-wrap: wrap;
     gap: 0 1ch;
@@ -63,14 +77,5 @@ const groups = groupByYear(Astro.props.posts);
   }
   .tags a {
     text-decoration: none;
-  }
-  @media (min-width: 640px) {
-    .post-list li {
-      grid-template-columns: 5ch 4ch 1fr auto;
-    }
-    .tags {
-      grid-column: 4;
-      justify-content: flex-end;
-    }
   }
 </style>
