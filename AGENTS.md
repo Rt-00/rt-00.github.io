@@ -32,6 +32,21 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
 - Posts are listed newest first (`date` desc, then slug). Posts published on the same day need a time in `date` (`2026-10-07T18:11:00Z`, UTC) so the newer one comes first; only the day is displayed.
 - Translated posts are separate entries cross-linked at the top (`Read in English` / `Leia em português`).
 - CSAPP series: reading notes per section, slug `csapp-<section>-<slug>` (e.g. `csapp-1-1-bits-e-contexto`), title `CSAPP §<section> — …`, tag `csapp` (`/tags/csapp/` is the series index), pt + en.
+- CSAPP writing voice (keep it for every new part):
+  - Didactic and pragmatic, first person, plain words, short sentences. No hype, no filler.
+    The pt version is written in natural Brazilian Portuguese, not a literal translation.
+  - Honest numbers: every claim in the hands-on part is measured on my own machine (say which
+    machine), shown as real output or a small table, then explained. Experiments are safe
+    (localhost only, no shells exposed).
+  - Ties back to earlier sections with links and follows the `hello` program through the series.
+  - Structure: series blockquote (previous part + translation link) → short intro naming the
+    subsections covered → `## O que o livro diz` / `## What the book says` (faithful summary,
+    subsections in bold with their number, asides included) → `## Conferindo na prática` /
+    `## Checking it myself` (`###` per experiment) → a reflective section opening with
+    "Esta é a parte filosófica." / "This is the philosophical part." → a practical section opening
+    with "O lado pragmático…" / "The pragmatic side…" (bullet consequences) → `## O que fica` /
+    `## Takeaways` (3 numbered points) → `Próxima parada: …` / `Next stop: …`. When the next part
+    is published, turn that line into a link in the previous post.
 - `draft-example.md` is a test fixture (drafts must not be built/counted) — keep it.
 - Keep this file updated as the source of truth for future agents.
 
