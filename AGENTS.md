@@ -38,6 +38,9 @@ content-first. Posts in Markdown/MDX. Deployed to GitHub Pages at https://rt-00.
   - Honest numbers: every claim in the hands-on part is measured on my own machine (say which
     machine), shown as real output or a small table, then explained. Experiments are safe
     (localhost only, no shells exposed).
+  - Show how each number was obtained: the relevant code, the exact compile command and flags (and
+    why), how it was timed and pinned (`clock_gettime`, repetitions, best-of-N, `taskset`), how the
+    compiler was kept from optimizing the test away, and any pitfall hit along the way.
   - Ties back to earlier sections with links and follows the `hello` program through the series.
   - Structure: series blockquote (previous part + translation link) → short intro naming the
     subsections covered → `## O que o livro diz` / `## What the book says` (faithful summary,
