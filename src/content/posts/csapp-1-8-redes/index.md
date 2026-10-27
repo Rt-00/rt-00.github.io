@@ -141,4 +141,4 @@ Algumas consequências práticas:
    arquivo, pipe ou socket. Vale a pena escrever ferramentas assim.
 3. Trate a rede como o nível mais lento e menos confiável da hierarquia, porque é isso que ela é.
 
-Próxima parada: 1.9, onde o livro reúne os temas importantes do capítulo.
+Próxima parada: [1.9](/posts/csapp-1-9-temas-importantes/), onde o livro reúne os temas importantes do capítulo.
