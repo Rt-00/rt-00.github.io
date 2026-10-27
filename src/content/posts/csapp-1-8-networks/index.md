@@ -142,4 +142,4 @@ Some practical consequences:
 3. Treat the network as the slowest and least reliable level of the hierarchy, because that is what
    it is.
 
-Next stop: 1.9, where the book gathers the chapter's important themes.
+Next stop: [1.9](/posts/csapp-1-9-important-themes/), where the book gathers the chapter's important themes.
