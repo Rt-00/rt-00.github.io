@@ -73,12 +73,89 @@ entre as aplicações e o hardware, com três abstrações. E a rede permite tro
 
 Todas as medições são deste notebook, um Intel Core i7-1255U. Ele tem 12 threads, mas não são 12
 núcleos iguais: são 2 núcleos rápidos (P-cores) com hyperthreading, que dão 4 threads, mais 8 núcleos
-menores e mais econômicos (E-cores).
+menores e mais econômicos (E-cores). O `lscpu -e` mostra quem é quem:
+
+```text
+$ lscpu -e=CPU,CORE,MAXMHZ
+CPU CORE    MAXMHZ
+  0    0 4700.0000
+  1    0 4700.0000
+  2    1 4700.0000
+  3    1 4700.0000
+  4    2 3500.0000
+...
+ 11    9 3500.0000
+```
+
+As CPUs 0 e 1 são o mesmo núcleo físico (CORE 0), assim como a 2 e a 3. Da 4 à 11, cada CPU é um
+E-core. Isso vai importar, porque com o `taskset` dá para escolher em quais CPUs um programa roda.
+
+### Como medi
+
+Os programas são em C, compilados com GCC 16.2. Todos medem o tempo do mesmo jeito, com um relógio
+monotônico lido antes e depois do trecho que interessa:
+
+```c
+static double now(void) {
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    return t.tv_sec + t.tv_nsec * 1e-9;
+}
+```
+
+O notebook estava na tomada, mas com o _governor_ `powersave`, então a frequência varia e os números
+mudam alguns por cento de uma execução para outra. Rodei cada teste pelo menos duas vezes e só usei
+os resultados que se repetiram. A ideia não é ter números exatos, é ver as proporções.
 
 ### Amdahl na minha máquina
 
-Escrevi um programa com uma parte serial, que só roda numa thread, e uma parte paralela, dividida
-entre várias threads. A parte serial é 10% do tempo com uma thread, então α = 0,9:
+Para testar a lei de Amdahl, precisei de um programa em que dá para controlar o α. O trabalho é uma
+cadeia de contas em que cada passo depende do anterior. Assim o compilador não consegue pular nem
+simplificar nada:
+
+```c
+static double work(long n, double x) {
+    for (long i = 0; i < n; i++)
+        x = x * 1.0000001 + 1e-9;
+    return x;
+}
+```
+
+A parte paralela divide esse trabalho em 4.000 pedaços. Cada thread pega o próximo pedaço livre de
+um contador atômico, até acabarem:
+
+```c
+static atomic_int next_chunk;
+
+static void *worker(void *arg) {
+    double s = 0;
+    int c;
+    while ((c = atomic_fetch_add(&next_chunk, 1)) < CHUNKS)
+        s += work(CHUNK_ITERS, c);
+    *(double *)arg = s; /* usar o resultado, para o compilador não descartar a conta */
+    return NULL;
+}
+```
+
+Dividir em pedaços pequenos é importante numa CPU híbrida. Se cada thread recebesse uma fatia fixa,
+as threads nos P-cores terminariam antes e ficariam esperando as dos E-cores. Com o contador, quem é
+mais rápido simplesmente pega mais pedaços.
+
+A `main` primeiro roda a parte serial, numa thread só, com o tamanho calculado para ser 10% do
+total. Depois cria as threads, espera todas terminarem com `pthread_join` e imprime os tempos:
+
+```text
+$ gcc -O2 -pthread amdahl.c -o amdahl
+$ for t in 1 2 4 8 12; do ./amdahl $t 0.1; done
+T= 1 serial=0.149s parallel=1.510s total=1.659s
+T= 2 serial=0.164s parallel=0.767s total=0.931s
+T= 4 serial=0.145s parallel=0.433s total=0.578s
+T= 8 serial=0.149s parallel=0.240s total=0.389s
+T=12 serial=0.146s parallel=0.170s total=0.316s
+```
+
+O speedup medido é o tempo com 1 thread dividido pelo tempo com T threads. A coluna de Amdahl é a
+fórmula com α = 0,9 e k = T:
 
 | Threads | Tempo  | Speedup medido | Amdahl (α = 0,9) |
 | ------- | ------ | -------------- | ---------------- |
@@ -93,14 +170,46 @@ A fórmula acerta bem. A parte serial levou 0,15 s em todas as linhas, e com 12 
 metade do tempo total. Daqui para frente, mais threads quase não ajudam: nem com infinitas threads o
 programa ficaria mais de 10 vezes mais rápido.
 
-O medido fica um pouco abaixo da fórmula por causa da máquina. Sem nenhuma parte serial, 12 threads
-deram 8,7×, e não 12×, porque os E-cores são mais lentos e duas threads no mesmo P-core dividem o
-núcleo.
+O medido fica um pouco abaixo da fórmula por causa da máquina. Rodando sem nenhuma parte serial
+(`./amdahl 12`), 12 threads deram 8,7×, e não 12×, porque os E-cores são mais lentos e duas threads no
+mesmo P-core dividem o núcleo.
 
 ### Hyperthreading: duas threads, um núcleo
 
-Para ver o hyperthreading, rodei dois tipos de laço. Cada thread faz o mesmo trabalho, então o ideal
-é que duas threads levem o mesmo tempo que uma:
+Para ver o hyperthreading, escrevi dois laços com o mesmo número de somas, um bilhão. No primeiro,
+cada soma depende da anterior. No segundo, as somas são divididas em oito cadeias independentes:
+
+```c
+/* uma cadeia: cada soma espera a anterior */
+double x = 1;
+for (long i = 0; i < R; i++)
+    x = x + d;
+
+/* oito cadeias independentes */
+double s0 = 0, s1 = 1, s2 = 2, s3 = 3, s4 = 4, s5 = 5, s6 = 6, s7 = 7;
+for (long i = 0; i < R / 8; i++) {
+    s0 += d; s1 += d; s2 += d; s3 += d;
+    s4 += d; s5 += d; s6 += d; s7 += d;
+}
+```
+
+O valor de `d` vem da linha de comando, para o compilador não calcular nada antes de o programa rodar.
+E a primeira versão me pregou uma peça: os oito acumuladores começavam em zero. Como as oito contas
+eram idênticas, o compilador fez uma só e reaproveitou o resultado, e o laço "somou" um bilhão de
+números em 0,06 s. Começar cada acumulador com um valor diferente resolveu. Para ter certeza, conferi
+com `objdump -d` que o laço tinha as oito instruções `addsd`, cada uma num registrador diferente.
+
+Compilei sem vetorização, para o compilador não trocar as oito cadeias por SIMD (isso fica para o
+próximo teste). Cada thread roda o laço inteiro, e o `taskset` escolhe onde:
+
+```text
+$ gcc -O2 -fno-tree-vectorize -fno-tree-slp-vectorize -pthread ht.c -o ht
+$ taskset -c 0 ./ht 1 ...     # 1 thread
+$ taskset -c 0,1 ./ht 2 ...   # 2 threads no mesmo núcleo (CPUs 0 e 1)
+$ taskset -c 0,2 ./ht 2 ...   # 2 threads em núcleos diferentes (CPUs 0 e 2)
+```
+
+Como cada thread faz o mesmo trabalho, o ideal é que duas threads levem o mesmo tempo que uma:
 
 | Laço                                | 1 thread | 2 threads, mesmo núcleo | 2 threads, núcleos diferentes |
 | ----------------------------------- | -------- | ----------------------- | ----------------------------- |
@@ -140,6 +249,33 @@ double sum4(const double *x, int n) {
 }
 ```
 
+A versão com 8 acumuladores segue o mesmo padrão. Os 4.096 `double` ocupam 32 KiB e cabem no cache
+L1 do núcleo, então o teste mede o processador, não a memória (a
+[seção 1.5](/posts/csapp-1-5-caches-importam/) mostra o que acontece quando os dados não cabem).
+
+Uma soma só é rápida demais para o relógio, então o programa chama cada função 200 mil vezes seguidas
+e divide o tempo pelo número de elementos somados. Repete isso cinco vezes e fica com o menor tempo,
+que é o que tem menos interferência do resto do sistema. As funções levam
+`__attribute__((noinline))` e o resultado vai para uma variável `volatile`, para o compilador não
+juntar nem descartar as chamadas.
+
+Compilei duas vezes. As três primeiras linhas da tabela vêm de um binário sem vetorização, porque no
+`-O2` o GCC já usa um pouco de SIMD e misturaria os dois efeitos. A última vem de um binário com
+`-O3 -march=native`, que deixa o compilador usar todas as instruções deste processador, incluindo o
+AVX2. Tudo rodou fixado na CPU 2, um P-core:
+
+```text
+$ gcc -O2 -fno-tree-vectorize -fno-tree-slp-vectorize ilp.c -o ilp_scalar
+$ gcc -O3 -march=native ilp.c -o ilp_simd
+$ taskset -c 2 ./ilp_scalar
+1 acc: 0.450 ns/elem
+4 acc: 0.116 ns/elem
+8 acc: 0.115 ns/elem
+$ taskset -c 2 ./ilp_simd
+...
+8 acc: 0.057 ns/elem
+```
+
 | Versão                                    | ns por elemento | Ganho |
 | ----------------------------------------- | --------------- | ----- |
 | 1 acumulador                              | 0,45            | 1×    |
@@ -155,23 +291,41 @@ Com 4 acumuladores, as somas viram 4 cadeias independentes, e o processador supe
 várias ao mesmo tempo. Fica 3,9 vezes mais rápido, com as mesmas instruções. Com 8 acumuladores, não
 melhora mais nada: o núcleo tem duas unidades de soma, e elas já estão ocupadas.
 
-O último passo é SIMD. Deixando o compilador usar AVX2, ele trocou as somas por `vaddpd`, uma
-instrução que soma 4 `double` de uma vez. São 7,9× sobre a primeira versão, sem nenhuma thread.
+O último passo é SIMD. Para ver o que o compilador fez, basta procurar as instruções no binário:
+
+```text
+$ objdump -d ilp_simd | grep vaddpd
+    14c3:	vaddpd (%rdi),%ymm1,%ymm1
+    14c7:	vaddpd 0x20(%rdi),%ymm2,%ymm2
+```
+
+O `vaddpd` soma 4 `double` de uma vez, usando os registradores `ymm` de 256 bits. São 7,9× sobre a
+primeira versão, sem nenhuma thread.
 
 Um detalhe curioso: o compilador não faz a troca de um para vários acumuladores sozinho. Somas de
 ponto flutuante não são associativas (`(a + b) + c` pode dar diferente de `a + (b + c)`), e mudar a
-ordem pode mudar o resultado. Só com `-ffast-math`, que dá permissão para isso, a versão com um
-acumulador caiu para 0,11 ns.
+ordem pode mudar o resultado. Só compilando com `-ffast-math`, que dá permissão para isso, a versão
+com um acumulador caiu para 0,11 ns.
 
 ### A mesma função em três processadores
 
-E a abstração da ISA. A mesma função em C, compilada para três arquiteturas diferentes:
+E a abstração da ISA. Diferente do GCC, o Clang é um compilador cruzado por padrão: o mesmo binário
+gera código para várias arquiteturas, escolhidas com `--target`. Com `-S`, ele para no assembly, e
+não precisa de nenhuma biblioteca da outra arquitetura instalada:
 
 ```c
 long add(long a, long b) {
     return a + b;
 }
 ```
+
+```text
+$ clang --target=x86_64-linux-gnu -O2 -S -o - add.c
+$ clang --target=aarch64-linux-gnu -O2 -S -o - add.c
+$ clang --target=riscv64-linux-gnu -O2 -S -o - add.c
+```
+
+Tirando as diretivas do montador (as linhas que começam com `.`), sobra isto:
 
 ```text
 x86-64:   leaq (%rdi,%rsi), %rax
